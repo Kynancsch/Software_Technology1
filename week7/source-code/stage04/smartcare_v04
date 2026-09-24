@@ -1,0 +1,147 @@
+#Creating patient classes - B
+class Patient:
+    def __init__(self, patient_id: int, name: str):
+        if patient_id <= 0:
+            raise ValueError("Patient ID must be positive")
+        if not name.strip():
+            raise ValueError("Patient name cannot be empty")
+        self.create_record = patient_id
+        self.name = name
+
+    def create_record(self) -> None:
+        print(f"Patient record created for {self.name}")
+        
+    def search_by_name(self, name: str) -> bool:
+        return self.name.lower() == name.lower()
+    
+    def update_details(self, name: str) -> None:
+        if not name.strip():
+            raise ValueError("Patient name cannot be empty")
+        self.name = name
+
+    def retrieve_information(self) -> dict:
+        return {"patient_id": self.create_record,"name": self.name}
+
+
+#Patient Example
+patient = Patient(1, "John Smith")
+patient.create_record
+print(patient.search_by_name("John Smith"))
+patient.update_details("John Smith")
+print(patient.retrieve_information())
+
+#Creating practitioner classes - C
+class Practitioner:
+    def __init__(self, practitioner_id: int, name: str, specialty: str):
+        if practitioner_id <= 0:
+            raise ValueError("Practitioner ID must be positive")
+
+        if not name.strip():
+            raise ValueError("Practitioner name cannot be empty")
+
+        if not specialty.strip():
+            raise ValueError("Practitioner specialty cannot be empty")
+
+        self.practitioner_id = practitioner_id
+        self.name = name
+        self.specialty = specialty
+        self.availability = []
+
+    def view_schedule(self) -> list:
+        return self.availability
+
+    def view_availability(self) -> list:
+        return self.availability
+
+    def update_availability(self, availability: list) -> None:
+        self.availability = availability
+
+
+#Practitioner Example
+practitioner = Practitioner(101,"Dr Smith","General Practice")
+practitioner.update_availability(["Monday 9:00-12:00", "Wednesday 13:00-17:00"])
+
+print(practitioner.view_schedule())
+print(practitioner.view_availability())
+
+#AI generated code - D & E
+from enum import Enum
+
+
+class AppointmentStatus(Enum):
+    BOOKED = "Booked"
+    CANCELLED = "Cancelled"
+
+class Appointment:
+    def __init__(
+        self,
+        appointment_id: int,
+        date_time: str,
+        patient,
+        practitioner
+    ):
+        if appointment_id <= 0:
+            raise ValueError("Appointment ID must be positive")
+
+        if not date_time.strip():
+            raise ValueError("Appointment date and time cannot be empty")
+
+        if patient is None:
+            raise ValueError("Appointment must have a patient")
+
+        if practitioner is None:
+            raise ValueError("Appointment must have a practitioner")
+
+        self.appointment_id = appointment_id
+        self.date_time = date_time
+        self.patient = patient
+        self.practitioner = practitioner
+        self._status = AppointmentStatus.BOOKED
+
+    def book(self) -> None:
+        if self._status != AppointmentStatus.CANCELLED:
+            raise ValueError("Appointment is already booked")
+
+        self._status = AppointmentStatus.BOOKED
+
+    def cancel(self) -> None:
+        if self._status == AppointmentStatus.CANCELLED:
+            raise ValueError("Appointment is already cancelled")
+
+        self._status = AppointmentStatus.CANCELLED
+        self.release_booking_slot()
+
+    def update_status(self, status: AppointmentStatus) -> None:
+        if not isinstance(status, AppointmentStatus):
+            raise ValueError("Invalid appointment status")
+
+        if self._status == AppointmentStatus.CANCELLED:
+            raise ValueError("Cancelled appointment cannot change status")
+
+        self._status = status
+
+    def release_booking_slot(self) -> None:
+        print(f"Booking slot released for {self.date_time}")
+
+    @property
+    def status(self) -> AppointmentStatus:
+        return self._status
+
+# Manual Behaviour Checks - F & G
+patient = Patient(1, "John Smith")
+practitioner = Practitioner(101, "Dr Smith", "General Practice")
+appointment = Appointment(1,"Monday 9:00",patient,practitioner)
+print("Initial status:", appointment.status)
+
+try:
+    invalid_patient = Patient(0, "")
+except ValueError as error:
+    print("Invalid input test passed:", error)
+
+appointment.cancel()
+print("After cancellation:", appointment.status)
+
+try:
+    appointment.cancel()
+except ValueError as error:
+    print("Repeated cancellation test passed:", error)
